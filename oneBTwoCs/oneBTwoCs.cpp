@@ -2,17 +2,26 @@
 // at most 1 b and 2 c'ss. The rest of the letters are a's.
 #include <string>
 #include <iostream>
+#include <unordered_map>
 
 using namespace std;
 
 int maxLength = 0;
 int maxB = 1;
 int maxC = 2;
+unordered_map <int, int> cache = {};
 
 int getStrings(int stringLength, int numB, int numC) {
     // Non-recursive case, string at max length. Only this one possible, return 1.
     if (stringLength == maxLength) {
         return 1;
+    }
+
+    // Before recursing, check cache to see if we've done this before.
+    int index = (stringLength << 3) + (numB << 2) + numC;
+    unordered_map<int, int>::const_iterator iter = cache.find(index);
+    if (iter != cache.end()) {
+        return iter->second;
     }
 
     // Recursive case. If space, recurse into adding b and c. Always recurse into adding a.
@@ -24,6 +33,7 @@ int getStrings(int stringLength, int numB, int numC) {
     if (numC < maxC) {
         stringsFound += getStrings(stringLength, numB, numC + 1);
     }
+    cache.insert({index, stringsFound});
     return stringsFound;
 }
 
