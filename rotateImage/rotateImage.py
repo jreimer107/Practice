@@ -1,6 +1,6 @@
 from math import floor
 
-NUM_ROTATIONS = 2
+NUM_ROTATIONS = 4
 IMAGE_SIDE_LEN = 5
 HAS_ODD_SIZE = IMAGE_SIDE_LEN % 2 != 0
 
@@ -45,16 +45,23 @@ def rotate_pointers(ring_start: int, ring_end: int, x: int, y: int, num_rotation
     Returns:
         tuple[int, int] The rotated coordinates.
     """
-    for i in range(num_rotations):
+    remaining_rotations = num_rotations
+    while remaining_rotations > 0:
         if x == ring_start and y != ring_end:  # top
-            y += 1
+            rotations = min(ring_end - y, remaining_rotations)
+            y += rotations
         elif x != ring_start and y == ring_start:  # left
-            x -= 1
+            rotations = min(x - ring_start, remaining_rotations)
+            x -= rotations
         elif x == ring_end and y != ring_start:  # bottom
-            y -= 1
+            rotations = min(y - ring_start, remaining_rotations)
+            y -= rotations
         else:  # right
-            x += 1
+            rotations = min(ring_end - x, remaining_rotations)
+            x += rotations
 
+        remaining_rotations -= rotations
+      
     return x, y
 
 
